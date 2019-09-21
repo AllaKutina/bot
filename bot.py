@@ -25,13 +25,15 @@ def talk_to_me(bot, update):
 
 def get_constellation(bot, update):
     user_text = update.message.text
-    planet = user_text.split(' ')[1].lower()
+    planet = user_text.split(' ')[1]
     today = date.today()
     now = '{}/{}/{}'.format(today.year, today.month, today.day)
 
-    if(planet == 'mars'):
-        mars = ephem.Mars(now)
-        const = ephem.constellation(mars)
+    planet = getattr(ephem, planet.capitalize(), None)
+
+    if planet:
+        planet = planet(now)
+        const = ephem.constellation(planet)
         result = ','.join(const)
         update.message.reply_text(result)
     else:
